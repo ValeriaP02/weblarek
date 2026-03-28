@@ -25,7 +25,21 @@ const productsModel = new ProductCatalog();
 // Устанавливаем список всех товаров из полученных данных
 productsModel.setAllProducts(apiProducts.items);
 
+console.log("--- ProductCatalog ---");
+
 console.log("Массив товаров из каталога:", productsModel.getAllProducts());
+
+const productId = "854cef69-976d-4c2a-a18c-2aa45046c390";
+const product = productsModel.getProductById(productId);
+
+console.log("ProductCatalog: Получение продукта по id:", product);
+
+if (product) {
+  productsModel.selectProduct(product);
+  console.log("Выбранный товар:", productsModel.getSelectedProduct());
+} else {
+  console.log(`Товар с id ${productId} не найден.`);
+}
 
 /* 
 __________________________________________Модель клиента (Customer)_____________________________________________________
@@ -39,14 +53,22 @@ const customerData = {
   email: "test@domain.com",
   phone: "+7(999)123-45-67",
   address: "Калининград, ул. Александра Невского, д. 1",
-  payment: { method: "card", amount: 750 },
+  payment: undefined,
 };
 
 // Сохраняем данные клиента в модель
 customer.saveData(customerData);
 
+console.log("--- Customer ---");
+
 console.log("Данные клиента:", customer.getAllData());
 console.log("Валидность данных:", customer.validateData());
+
+// Вызов очистки данных клиента
+customer.clearCustomerData();
+
+// Вывод после очистки данных
+console.log("Данные клиента после очистки:", customer.getAllData());
 
 /* 
 __________________________________________Модель корзины (Cart)_________________________________________________________
@@ -55,11 +77,28 @@ __________________________________________Модель корзины (Cart)____
 // Создаем экземпляр корзины
 const cart = new Cart();
 
-// Добавляем первый товар из каталога в корзину
+// Добавляет первый товар из каталога в корзину
 cart.addItem(productsModel.getAllProducts()[0]);
 
+console.log("--- Cart ---");
+
+// Выводит текущие товары и их количество
 console.log("Товары в корзине:", cart.getItems());
-console.log("Общая цена:", cart.getTotalPrice());
+console.log("Количество товаров:", cart.getItemCount());
+console.log("Общая стоимость:", cart.getTotalPrice());
+
+// Удаляет товар по ID и снова выводит содержимое корзины
+const firstProductId = productsModel.getAllProducts()[0].id;
+cart.removeItem(firstProductId);
+console.log(`После удаления товара с id ${firstProductId}:`);
+console.log("Товары в корзине:", cart.getItems());
+console.log("Количество товаров:", cart.getItemCount());
+
+// Очищает корзину и выводит содержимое и количество после очистки
+cart.clearCart();
+console.log("После очистки корзины:");
+console.log("Товары в корзине:", cart.getItems());
+console.log("Количество товаров:", cart.getItemCount());
 
 /* 
 __________________________________________Слой коммуникации (CommunicationLayer)_________________________________________
@@ -70,6 +109,8 @@ const apiInstance = new Api(API_URL);
 
 // Создаем слой коммуникации, передавая ему объект API
 const comms = new CommunicationLayer(apiInstance);
+
+console.log("--- CommunicationLayer ---");
 
 (async () => {
   try {

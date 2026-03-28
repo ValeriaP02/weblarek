@@ -30,11 +30,8 @@ export interface IBuyer {
   address: string;
 }
 
-// Интерфейс для описания способа платежа
-export interface TPayment {
-  method: string; // Метод оплаты
-  amount: number; // Сумма платежа
-}
+// Тип для способа оплаты это выбор из нескольких вариантов строк.
+export type TPayment = "online" | "on_delivery" | "";
 
 // Интерфейс для ответа с списком товаров
 export interface IProductResponse {
@@ -43,7 +40,7 @@ export interface IProductResponse {
 }
 
 // Интерфейс для данных заказа
-export interface IOrderData {
+export interface IOrderData extends IBuyer {
   products: { id: string }[]; // Список товаров по их ID
-  buyer: IBuyer; // Данные покупателя
+  total: number;
 }
