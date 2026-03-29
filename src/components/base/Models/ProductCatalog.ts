@@ -10,11 +10,6 @@ export class ProductCatalog {
     return this.allProducts;
   }
 
-  // Метод для установки полного списка товаров
-  public setProducts(products: IProduct[]): void {
-    this.allProducts = products;
-  }
-
   // Метод для получения текущего выбранного товара
   public getSelectedProduct(): IProduct | null {
     return this.selectedProduct; // Возвращает выбранный товар или null

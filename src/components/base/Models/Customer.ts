@@ -1,5 +1,8 @@
 import { IBuyer, TPayment } from "../../../types";
 
+// Вынесение типа ошибок в отдельный тип
+type CustomerErrors = Partial<Record<keyof IBuyer, string>>;
+
 // Класс Customer представляет собой покупателя и хранит его данные
 export class Customer {
   private payment: TPayment = "";
@@ -8,8 +11,8 @@ export class Customer {
   private address: string = "";
 
   // Метод для валидации данных покупателя
-  public validateData(): { [key: string]: string } {
-    const errors: { [key: string]: string } = {};
+  public validateData(): CustomerErrors {
+    const errors: CustomerErrors = {};
 
     if (!this.email) {
       errors.email = "Email обязателен";
@@ -20,7 +23,7 @@ export class Customer {
     if (!this.address) {
       errors.address = "Адрес обязателен";
     }
-    if (this.payment === undefined || this.payment === null) {
+    if (this.payment) {
       errors.payment = "Способ оплаты обязателен";
     }
 
@@ -46,10 +49,10 @@ export class Customer {
   // Метод для получения всех данных покупателя
   public getAllData(): IBuyer {
     return {
-      email: this.email ?? "",
-      phone: this.phone ?? "",
-      address: this.address ?? "",
-      payment: this.payment ?? null,
+      email: this.email,
+      phone: this.phone,
+      address: this.address,
+      payment: this.payment,
     };
   }
 

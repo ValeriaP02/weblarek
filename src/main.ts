@@ -29,17 +29,16 @@ console.log("--- ProductCatalog ---");
 
 console.log("Массив товаров из каталога:", productsModel.getAllProducts());
 
-const productId = "854cef69-976d-4c2a-a18c-2aa45046c390";
-const product = productsModel.getProductById(productId);
+const firstProduct = apiProducts.items[0];
 
-console.log("ProductCatalog: Получение продукта по id:", product);
-
-if (product) {
-  productsModel.selectProduct(product);
-  console.log("Выбранный товар:", productsModel.getSelectedProduct());
+if (firstProduct) {
+  // Устанавливаем выбранный продукт, используя первый товар из списка
+  productsModel.selectProduct(firstProduct);
 } else {
-  console.log(`Товар с id ${productId} не найден.`);
+  console.log("Список товаров пуст, невозможно выбрать продукт.");
 }
+
+console.log("Выбранный товар (после установки):", productsModel.getSelectedProduct(),);
 
 /* 
 __________________________________________Модель клиента (Customer)_____________________________________________________

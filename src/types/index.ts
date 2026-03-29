@@ -1,3 +1,4 @@
+// Тип для методов, которые отправляют данные на сервер
 export type ApiPostMethods = "POST" | "PUT" | "DELETE";
 
 // Интерфейс для API, описывающий методы взаимодействия с сервером
@@ -39,8 +40,15 @@ export interface IProductResponse {
   items: IProduct[]; // Массив товаров
 }
 
-// Интерфейс для данных заказа
+// Интерфейс для данных заказа, включает данные покупателя и список ID товаров
 export interface IOrderData extends IBuyer {
   products: { id: string }[]; // Список товаров по их ID
   total: number;
+}
+
+// Интерфейс для ответа сервера при отправке заказа.
+// Согласно Postman, ответ содержит confirmation и totalAmount.
+export interface IOrderResponse {
+  confirmation: string; // Идентификатор подтверждения заказа
+  totalAmount: number; // Итоговая сумма заказа
 }
