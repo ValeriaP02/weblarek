@@ -42,13 +42,12 @@ export interface IProductResponse {
 
 // Интерфейс для данных заказа, включает данные покупателя и список ID товаров
 export interface IOrderData extends IBuyer {
-  products: { id: string }[]; // Список товаров по их ID
+  items: string[]; // Список товаров по их ID (массив строк)
   total: number;
 }
 
 // Интерфейс для ответа сервера при отправке заказа.
-// Согласно Postman, ответ содержит confirmation и totalAmount.
 export interface IOrderResponse {
-  confirmation: string; // Идентификатор подтверждения заказа
-  totalAmount: number; // Итоговая сумма заказа
+  id: string; // Идентификатор подтверждения заказа
+  total: number; // Итоговая сумма заказа
 }

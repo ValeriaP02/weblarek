@@ -23,7 +23,7 @@ export class Customer {
     if (!this.address) {
       errors.address = "Адрес обязателен";
     }
-    if (this.payment) {
+    if (!this.payment) {
       errors.payment = "Способ оплаты обязателен";
     }
 
