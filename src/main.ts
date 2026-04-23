@@ -21,7 +21,13 @@ import { Basket } from "./components/base/Views/Basket";
 
 import { ensureElement } from "./utils/utils";
 import { EventEmitter } from "./components/base/Events";
-import { IProduct, IBuyer, IOrderData, IOrderResponse } from "./types";
+import {
+  IProduct,
+  IBuyer,
+  IOrderData,
+  IOrderResponse,
+  TPayment,
+} from "./types";
 
 // Инициализация инфраструктурных компонентов: брокера событий, API и слоя коммуникации
 const events = new EventEmitter();
@@ -144,27 +150,33 @@ cartModel.on("cart:cleared", () => {
 });
 
 // Обновление полей ввода в формах при изменении данных в модели покупателя
-customerModel.on("customer:dataUpdated", (changes) => {
-  if ("email" in changes) contactsForm.email = changes.email;
-  if ("phone" in changes) contactsForm.phone = changes.phone;
-  if ("address" in changes) orderForm.address = changes.address;
-  if ("payment" in changes) orderForm.payment = changes.payment;
+customerModel.on("customer:dataUpdated", () => {
+  // Получаем актуальные данные из модели
+  const data = customerModel.getAllData();
+
+  // Обновляем поля ввода и кнопки выбора оплаты
+  orderForm.address = data.address;
+  orderForm.payment = data.payment as TPayment;
+
+  contactsForm.email = data.email;
+  contactsForm.phone = data.phone;
 
   const errors = customerModel.validateData();
 
-  // Кнопка "Далее" активна, если адрес и оплата заполнены
+  // Управление формой Order
+  const orderErrorStrings = [errors.address, errors.payment].filter(Boolean);
+  orderForm.error = {
+    error: orderErrorStrings.length > 0 ? orderErrorStrings.join("; ") : "",
+  };
   orderForm.enable = !errors.address && !errors.payment;
 
-  // Кнопка "Оплатить" активна, если почта и телефон заполнены
+  // Управление формой Contacts
+  const contactsErrorStrings = [errors.email, errors.phone].filter(Boolean);
+  contactsForm.error = {
+    error:
+      contactsErrorStrings.length > 0 ? contactsErrorStrings.join("; ") : "",
+  };
   contactsForm.enable = !errors.email && !errors.phone;
-});
-
-// Сброс всех полей форм при очистке данных покупателя
-customerModel.on("customer:cleared", () => {
-  contactsForm.email = "";
-  contactsForm.phone = "";
-  orderForm.address = "";
-  orderForm.payment = "";
 });
 
 // Обработка события открытия корзины и рендеринг её содержимого
@@ -200,42 +212,14 @@ events.on("basket:open", () => {
 
 // Адрес и Оплата
 events.on("order:open", () => {
-  const customerData = customerModel.getAllData();
-  orderForm.address = customerData.address;
-  orderForm.payment = customerData.payment ?? "";
-
-  orderForm.error = {};
-  orderForm.enable = true;
-
   modal.content = orderForm.render();
   modal.show = true;
 });
 
 // Срабатывает при нажатии на кнопку "Далее" в форме заказа
 events.on("order:close", () => {
-  const formData = { address: orderForm.address, payment: orderForm.payment };
-  customerModel.saveData(formData);
-
-  const errors = customerModel.validateData();
-
-  // Проверяем только поля текущего шага
-  if (!errors.address && !errors.payment) {
-    // Если всё ок, переходим к контактам
-    const customerData = customerModel.getAllData();
-    contactsForm.email = customerData.email;
-    contactsForm.phone = customerData.phone;
-    contactsForm.error = {};
-    contactsForm.enable = true;
-
-    modal.content = contactsForm.render();
-    modal.show = true;
-  } else {
-    // Если поля не выбраны/не заполнены, показываем ошибки
-    orderForm.error = {
-      address: errors.address,
-      payment: errors.payment,
-    };
-  }
+  modal.content = contactsForm.render();
+  modal.show = true;
 });
 
 // Контакты

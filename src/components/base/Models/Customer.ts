@@ -32,27 +32,27 @@ export class Customer {
 
   // Частично или полностью обновляет данные покупателя
   public saveData(buyerData: Partial<IBuyer>): void {
-    const changes: Partial<IBuyer> = {};
-
+    let changed = false;
     if (buyerData.email !== undefined) {
       this.email = buyerData.email;
-      changes.email = buyerData.email;
+      changed = true;
     }
     if (buyerData.phone !== undefined) {
       this.phone = buyerData.phone;
-      changes.phone = buyerData.phone;
+      changed = true;
     }
     if (buyerData.address !== undefined) {
       this.address = buyerData.address;
-      changes.address = buyerData.address;
+      changed = true;
     }
     if (buyerData.payment !== undefined) {
       this.payment = buyerData.payment;
-      changes.payment = buyerData.payment;
+      changed = true;
     }
 
-    if (Object.keys(changes).length > 0) {
-      this.events.emit("customer:dataUpdated", changes);
+    if (changed) {
+      // Событие без параметров
+      this.events.emit("customer:dataUpdated");
     }
   }
 
@@ -68,12 +68,12 @@ export class Customer {
 
   // Сбрасывает все поля данных покупателя к начальным значениям
   public clearCustomerData(): void {
-    const previousData = this.getAllData();
     this.email = "";
     this.phone = "";
     this.address = "";
     this.payment = "";
-    this.events.emit("customer:cleared", previousData);
+    // Вызываем то же событие обновления данных
+    this.events.emit("customer:dataUpdated");
   }
 
   // Подписка на события изменения данных покупателя
