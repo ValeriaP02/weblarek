@@ -25,29 +25,29 @@ export interface IProduct {
 
 // Интерфейс для данных покупателя
 export interface IBuyer {
-  payment: TPayment;
+  payment?: TPayment;
   email: string;
   phone: string;
   address: string;
 }
 
-// Тип для способа оплаты это выбор из нескольких вариантов строк.
-export type TPayment = "online" | "on_delivery" | "";
+// Тип, перечисляющий доступные способы оплаты
+export type TPayment = "online" | "cash" | "";
 
-// Интерфейс для ответа с списком товаров
+// Интерфейс для ответа сервера, содержащего список товаров и их количество
 export interface IProductResponse {
-  total: number; // Общее количество товаров
-  items: IProduct[]; // Массив товаров
+  total: number;
+  items: IProduct[];
 }
 
-// Интерфейс для данных заказа, включает данные покупателя и список ID товаров
+// Интерфейс для формирования данных заказа, отправляемых на сервер
 export interface IOrderData extends IBuyer {
-  items: string[]; // Список товаров по их ID (массив строк)
+  items: string[];
   total: number;
 }
 
-// Интерфейс для ответа сервера при отправке заказа.
+// Интерфейс для ответа сервера после успешного создания заказа
 export interface IOrderResponse {
-  id: string; // Идентификатор подтверждения заказа
-  total: number; // Итоговая сумма заказа
+  id: string;
+  total: number;
 }

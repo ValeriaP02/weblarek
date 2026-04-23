@@ -1,4 +1,9 @@
-import {IApi, IProductResponse, IOrderData, IOrderResponse,} from "../../../types"; 
+import {
+  IApi,
+  IProductResponse,
+  IOrderData,
+  IOrderResponse,
+} from "../../../types";
 
 // Класс CommunicationLayer для взаимодействия с API (слой коммуникации)
 export class CommunicationLayer {
